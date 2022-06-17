@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 #include <sys/fcntl.h>
 
-// ³õÊ¼»¯·şÎñ¶ËµÄ¼àÌı¶Ë¿Ú¡£
+// åˆå§‹åŒ–æœåŠ¡ç«¯çš„ç›‘å¬ç«¯å£ã€‚
 int initserver(int port);
 
 int main(int argc,char *argv[])
@@ -16,7 +16,7 @@ int main(int argc,char *argv[])
     printf("usage: ./tcpselect port\n"); return -1;
   }
 
-  // ³õÊ¼»¯·şÎñ¶ËÓÃÓÚ¼àÌıµÄsocket¡£
+  // åˆå§‹åŒ–æœåŠ¡ç«¯ç”¨äºç›‘å¬çš„socketã€‚
   int listensock = initserver(atoi(argv[1]));
   printf("listensock=%d\n",listensock);
 
@@ -25,10 +25,10 @@ int main(int argc,char *argv[])
     printf("initserver() failed.\n"); return -1;
   }
 
-  fd_set readfdset;  // ¶ÁÊÂ¼şµÄ¼¯ºÏ£¬°üÀ¨¼àÌısocketºÍ¿Í»§¶ËÁ¬½ÓÉÏÀ´µÄsocket¡£
-  int maxfd;  // readfdsetÖĞsocketµÄ×î´óÖµ¡£
+  fd_set readfdset;  // è¯»äº‹ä»¶çš„é›†åˆï¼ŒåŒ…æ‹¬ç›‘å¬socketå’Œå®¢æˆ·ç«¯è¿æ¥ä¸Šæ¥çš„socketã€‚
+  int maxfd;  // readfdsetä¸­socketçš„æœ€å¤§å€¼ã€‚
 
-  // ³õÊ¼»¯½á¹¹Ìå£¬°ÑlistensockÌí¼Óµ½¼¯ºÏÖĞ¡£
+  // åˆå§‹åŒ–ç»“æ„ä½“ï¼ŒæŠŠlistensockæ·»åŠ åˆ°é›†åˆä¸­ã€‚
   FD_ZERO(&readfdset);
 
   FD_SET(listensock,&readfdset);
@@ -36,33 +36,33 @@ int main(int argc,char *argv[])
 
   while (1)
   {
-    // µ÷ÓÃselectº¯ÊıÊ±£¬»á¸Ä±äsocket¼¯ºÏµÄÄÚÈİ£¬ËùÒÔÒª°Ñsocket¼¯ºÏ±£´æÏÂÀ´£¬´«Ò»¸öÁÙÊ±µÄ¸øselect¡£
+    // è°ƒç”¨selectå‡½æ•°æ—¶ï¼Œä¼šæ”¹å˜socketé›†åˆçš„å†…å®¹ï¼Œæ‰€ä»¥è¦æŠŠsocketé›†åˆä¿å­˜ä¸‹æ¥ï¼Œä¼ ä¸€ä¸ªä¸´æ—¶çš„ç»™selectã€‚
     fd_set tmpfdset = readfdset;
 
     int infds = select(maxfd+1,&tmpfdset,NULL,NULL,NULL);
     // printf("select infds=%d\n",infds);
 
-    // ·µ»ØÊ§°Ü¡£
+    // è¿”å›å¤±è´¥ã€‚
     if (infds < 0)
     {
       printf("select() failed.\n"); perror("select()"); break;
     }
 
-    // ³¬Ê±£¬ÔÚ±¾³ÌĞòÖĞ£¬selectº¯Êı×îºóÒ»¸ö²ÎÊıÎª¿Õ£¬²»´æÔÚ³¬Ê±µÄÇé¿ö£¬µ«ÒÔÏÂ´úÂë»¹ÊÇÁô×Å¡£
+    // è¶…æ—¶ï¼Œåœ¨æœ¬ç¨‹åºä¸­ï¼Œselectå‡½æ•°æœ€åä¸€ä¸ªå‚æ•°ä¸ºç©ºï¼Œä¸å­˜åœ¨è¶…æ—¶çš„æƒ…å†µï¼Œä½†ä»¥ä¸‹ä»£ç è¿˜æ˜¯ç•™ç€ã€‚
     if (infds == 0)
     {
       printf("select() timeout.\n"); continue;
     }
 
-    // ¼ì²éÓĞÊÂÇé·¢ÉúµÄsocket£¬°üÀ¨¼àÌıºÍ¿Í»§¶ËÁ¬½ÓµÄsocket¡£
-    // ÕâÀïÊÇ¿Í»§¶ËµÄsocketÊÂ¼ş£¬Ã¿´Î¶¼Òª±éÀúÕû¸ö¼¯ºÏ£¬ÒòÎª¿ÉÄÜÓĞ¶à¸ösocketÓĞÊÂ¼ş¡£
+    // æ£€æŸ¥æœ‰äº‹æƒ…å‘ç”Ÿçš„socketï¼ŒåŒ…æ‹¬ç›‘å¬å’Œå®¢æˆ·ç«¯è¿æ¥çš„socketã€‚
+    // è¿™é‡Œæ˜¯å®¢æˆ·ç«¯çš„socketäº‹ä»¶ï¼Œæ¯æ¬¡éƒ½è¦éå†æ•´ä¸ªé›†åˆï¼Œå› ä¸ºå¯èƒ½æœ‰å¤šä¸ªsocketæœ‰äº‹ä»¶ã€‚
     for (int eventfd=0; eventfd <= maxfd; eventfd++)
     {
       if (FD_ISSET(eventfd,&tmpfdset)<=0) continue;
 
       if (eventfd==listensock)
       { 
-        // Èç¹û·¢ÉúÊÂ¼şµÄÊÇlistensock£¬±íÊ¾ÓĞĞÂµÄ¿Í»§¶ËÁ¬ÉÏÀ´¡£
+        // å¦‚æœå‘ç”Ÿäº‹ä»¶çš„æ˜¯listensockï¼Œè¡¨ç¤ºæœ‰æ–°çš„å®¢æˆ·ç«¯è¿ä¸Šæ¥ã€‚
         struct sockaddr_in client;
         socklen_t len = sizeof(client);
         int clientsock = accept(listensock,(struct sockaddr*)&client,&len);
@@ -73,7 +73,7 @@ int main(int argc,char *argv[])
 
         printf ("client(socket=%d) connected ok.\n",clientsock);
 
-        // °ÑĞÂµÄ¿Í»§¶Ësocket¼ÓÈë¼¯ºÏ¡£
+        // æŠŠæ–°çš„å®¢æˆ·ç«¯socketåŠ å…¥é›†åˆã€‚
         FD_SET(clientsock,&readfdset);
 
         if (maxfd < clientsock) maxfd = clientsock;
@@ -82,23 +82,23 @@ int main(int argc,char *argv[])
       }
       else
       {
-        // ¿Í»§¶ËÓĞÊı¾İ¹ıÀ´»ò¿Í»§¶ËµÄsocketÁ¬½Ó±»¶Ï¿ª¡£
+        // å®¢æˆ·ç«¯æœ‰æ•°æ®è¿‡æ¥æˆ–å®¢æˆ·ç«¯çš„socketè¿æ¥è¢«æ–­å¼€ã€‚
         char buffer[1024];
         memset(buffer,0,sizeof(buffer));
 
-        // ¶ÁÈ¡¿Í»§¶ËµÄÊı¾İ¡£
+        // è¯»å–å®¢æˆ·ç«¯çš„æ•°æ®ã€‚
         ssize_t isize=read(eventfd,buffer,sizeof(buffer));
 
-        // ·¢ÉúÁË´íÎó»òsocket±»¶Ô·½¹Ø±Õ¡£
+        // å‘ç”Ÿäº†é”™è¯¯æˆ–socketè¢«å¯¹æ–¹å…³é—­ã€‚
         if (isize <=0)
         {
           printf("client(eventfd=%d) disconnected.\n",eventfd);
 
-          close(eventfd);  // ¹Ø±Õ¿Í»§¶ËµÄsocket¡£
+          close(eventfd);  // å…³é—­å®¢æˆ·ç«¯çš„socketã€‚
 
-          FD_CLR(eventfd,&readfdset);  // ´Ó¼¯ºÏÖĞÒÆÈ¥¿Í»§¶ËµÄsocket¡£
+          FD_CLR(eventfd,&readfdset);  // ä»é›†åˆä¸­ç§»å»å®¢æˆ·ç«¯çš„socketã€‚
 
-          // ÖØĞÂ¼ÆËãmaxfdµÄÖµ£¬×¢Òâ£¬Ö»ÓĞµ±eventfd==maxfdÊ±²ÅĞèÒª¼ÆËã¡£
+          // é‡æ–°è®¡ç®—maxfdçš„å€¼ï¼Œæ³¨æ„ï¼Œåªæœ‰å½“eventfd==maxfdæ—¶æ‰éœ€è¦è®¡ç®—ã€‚
           if (eventfd == maxfd)
           {
             for (int ii=maxfd;ii>0;ii--)
@@ -117,7 +117,7 @@ int main(int argc,char *argv[])
 
         printf("recv(eventfd=%d,size=%d):%s\n",eventfd,isize,buffer);
 
-        // °ÑÊÕµ½µÄ±¨ÎÄ·¢»Ø¸ø¿Í»§¶Ë¡£
+        // æŠŠæ”¶åˆ°çš„æŠ¥æ–‡å‘å›ç»™å®¢æˆ·ç«¯ã€‚
         write(eventfd,buffer,strlen(buffer));
       }
     }
@@ -126,7 +126,7 @@ int main(int argc,char *argv[])
   return 0;
 }
 
-// ³õÊ¼»¯·şÎñ¶ËµÄ¼àÌı¶Ë¿Ú¡£
+// åˆå§‹åŒ–æœåŠ¡ç«¯çš„ç›‘å¬ç«¯å£ã€‚
 int initserver(int port)
 {
   int sock = socket(AF_INET,SOCK_STREAM,0);
@@ -135,7 +135,7 @@ int initserver(int port)
     printf("socket() failed.\n"); return -1;
   }
 
-  // LinuxÈçÏÂ
+  // Linuxå¦‚ä¸‹
   int opt = 1; unsigned int len = sizeof(opt);
   setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&opt,len);
   setsockopt(sock,SOL_SOCKET,SO_KEEPALIVE,&opt,len);

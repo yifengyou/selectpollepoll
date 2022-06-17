@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
   for (int ii=0;ii<10000;ii++)
   {
-    // ´ÓÃüÁîÐÐÊäÈëÄÚÈÝ¡£
+    // ä»Žå‘½ä»¤è¡Œè¾“å…¥å†…å®¹ã€‚
     memset(buf,0,sizeof(buf));
     printf("please input:"); scanf("%s",buf);
     // sprintf(buf,"1111111111111111111111ii=%08d",ii);

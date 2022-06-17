@@ -12,10 +12,10 @@
 
 #define MAXEVENTS 100
 
-// °ÑsocketÉèÖÃÎª·Ç×èÈûµÄ·½Ê½¡£
+// æŠŠsocketè®¾ç½®ä¸ºéé˜»å¡çš„æ–¹å¼ã€‚
 int setnonblocking(int sockfd);
 
-// ³õÊ¼»¯·şÎñ¶ËµÄ¼àÌı¶Ë¿Ú¡£
+// åˆå§‹åŒ–æœåŠ¡ç«¯çš„ç›‘å¬ç«¯å£ã€‚
 int initserver(int port);
 
 int main(int argc,char *argv[])
@@ -25,7 +25,7 @@ int main(int argc,char *argv[])
     printf("usage:./tcpepoll port\n"); return -1;
   }
 
-  // ³õÊ¼»¯·şÎñ¶ËÓÃÓÚ¼àÌıµÄsocket¡£
+  // åˆå§‹åŒ–æœåŠ¡ç«¯ç”¨äºç›‘å¬çš„socketã€‚
   int listensock = initserver(atoi(argv[1]));
   printf("listensock=%d\n",listensock);
 
@@ -39,10 +39,10 @@ int main(int argc,char *argv[])
   char buffer[1024];
   memset(buffer,0,sizeof(buffer));
 
-  // ´´½¨Ò»¸öÃèÊö·û
+  // åˆ›å»ºä¸€ä¸ªæè¿°ç¬¦
   epollfd = epoll_create(1);
 
-  // Ìí¼Ó¼àÌıÃèÊö·ûÊÂ¼ş
+  // æ·»åŠ ç›‘å¬æè¿°ç¬¦äº‹ä»¶
   struct epoll_event ev;
   ev.data.fd = listensock;
   ev.events = EPOLLIN;
@@ -50,30 +50,30 @@ int main(int argc,char *argv[])
 
   while (1)
   {
-    struct epoll_event events[MAXEVENTS]; // ´æ·ÅÓĞÊÂ¼ş·¢ÉúµÄ½á¹¹Êı×é¡£
+    struct epoll_event events[MAXEVENTS]; // å­˜æ”¾æœ‰äº‹ä»¶å‘ç”Ÿçš„ç»“æ„æ•°ç»„ã€‚
 
-    // µÈ´ı¼àÊÓµÄsocketÓĞÊÂ¼ş·¢Éú¡£
+    // ç­‰å¾…ç›‘è§†çš„socketæœ‰äº‹ä»¶å‘ç”Ÿã€‚
     int infds = epoll_wait(epollfd,events,MAXEVENTS,-1);
     // printf("epoll_wait infds=%d\n",infds);
 
-    // ·µ»ØÊ§°Ü¡£
+    // è¿”å›å¤±è´¥ã€‚
     if (infds < 0)
     {
       printf("epoll_wait() failed.\n"); perror("epoll_wait()"); break;
     }
 
-    // ³¬Ê±¡£
+    // è¶…æ—¶ã€‚
     if (infds == 0)
     {
       printf("epoll_wait() timeout.\n"); continue;
     }
 
-    // ±éÀúÓĞÊÂ¼ş·¢ÉúµÄ½á¹¹Êı×é¡£
+    // éå†æœ‰äº‹ä»¶å‘ç”Ÿçš„ç»“æ„æ•°ç»„ã€‚
     for (int ii=0;ii<infds;ii++)
     {
       if ((events[ii].data.fd == listensock) &&(events[ii].events & EPOLLIN))
       {
-        // Èç¹û·¢ÉúÊÂ¼şµÄÊÇlistensock£¬±íÊ¾ÓĞĞÂµÄ¿Í»§¶ËÁ¬ÉÏÀ´¡£
+        // å¦‚æœå‘ç”Ÿäº‹ä»¶çš„æ˜¯listensockï¼Œè¡¨ç¤ºæœ‰æ–°çš„å®¢æˆ·ç«¯è¿ä¸Šæ¥ã€‚
         struct sockaddr_in client;
         socklen_t len = sizeof(client);
         int clientsock = accept(listensock,(struct sockaddr*)&client,&len);
@@ -82,7 +82,7 @@ int main(int argc,char *argv[])
           printf("accept() failed.\n"); continue;
         }
 
-        // °ÑĞÂµÄ¿Í»§¶ËÌí¼Óµ½epollÖĞ¡£
+        // æŠŠæ–°çš„å®¢æˆ·ç«¯æ·»åŠ åˆ°epollä¸­ã€‚
         memset(&ev,0,sizeof(struct epoll_event));
         ev.data.fd = clientsock;
         ev.events = EPOLLIN;
@@ -94,19 +94,19 @@ int main(int argc,char *argv[])
       }
       else if (events[ii].events & EPOLLIN)
       {
-        // ¿Í»§¶ËÓĞÊı¾İ¹ıÀ´»ò¿Í»§¶ËµÄsocketÁ¬½Ó±»¶Ï¿ª¡£
+        // å®¢æˆ·ç«¯æœ‰æ•°æ®è¿‡æ¥æˆ–å®¢æˆ·ç«¯çš„socketè¿æ¥è¢«æ–­å¼€ã€‚
         char buffer[1024];
         memset(buffer,0,sizeof(buffer));
 
-        // ¶ÁÈ¡¿Í»§¶ËµÄÊı¾İ¡£
+        // è¯»å–å®¢æˆ·ç«¯çš„æ•°æ®ã€‚
         ssize_t isize=read(events[ii].data.fd,buffer,sizeof(buffer));
 
-        // ·¢ÉúÁË´íÎó»òsocket±»¶Ô·½¹Ø±Õ¡£
+        // å‘ç”Ÿäº†é”™è¯¯æˆ–socketè¢«å¯¹æ–¹å…³é—­ã€‚
         if (isize <=0)
         {
           printf("client(eventfd=%d) disconnected.\n",events[ii].data.fd);
 
-          // °ÑÒÑ¶Ï¿ªµÄ¿Í»§¶Ë´ÓepollÖĞÉ¾³ı¡£
+          // æŠŠå·²æ–­å¼€çš„å®¢æˆ·ç«¯ä»epollä¸­åˆ é™¤ã€‚
           memset(&ev,0,sizeof(struct epoll_event));
           ev.events = EPOLLIN;
           ev.data.fd = events[ii].data.fd;
@@ -117,7 +117,7 @@ int main(int argc,char *argv[])
 
         printf("recv(eventfd=%d,size=%d):%s\n",events[ii].data.fd,isize,buffer);
 
-        // °ÑÊÕµ½µÄ±¨ÎÄ·¢»Ø¸ø¿Í»§¶Ë¡£
+        // æŠŠæ”¶åˆ°çš„æŠ¥æ–‡å‘å›ç»™å®¢æˆ·ç«¯ã€‚
         write(events[ii].data.fd,buffer,strlen(buffer));
       }
     }
@@ -128,7 +128,7 @@ int main(int argc,char *argv[])
   return 0;
 }
 
-// ³õÊ¼»¯·şÎñ¶ËµÄ¼àÌı¶Ë¿Ú¡£
+// åˆå§‹åŒ–æœåŠ¡ç«¯çš„ç›‘å¬ç«¯å£ã€‚
 int initserver(int port)
 {
   int sock = socket(AF_INET,SOCK_STREAM,0);
@@ -137,7 +137,7 @@ int initserver(int port)
     printf("socket() failed.\n"); return -1;
   }
 
-  // LinuxÈçÏÂ
+  // Linuxå¦‚ä¸‹
   int opt = 1; unsigned int len = sizeof(opt);
   setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&opt,len);
   setsockopt(sock,SOL_SOCKET,SO_KEEPALIVE,&opt,len);
@@ -160,7 +160,7 @@ int initserver(int port)
   return sock;
 }
 
-// °ÑsocketÉèÖÃÎª·Ç×èÈûµÄ·½Ê½¡£
+// æŠŠsocketè®¾ç½®ä¸ºéé˜»å¡çš„æ–¹å¼ã€‚
 int setnonblocking(int sockfd)
 {  
   if (fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFD, 0)|O_NONBLOCK) == -1)  return -1;
