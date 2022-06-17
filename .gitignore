@@ -1,5 +1,7 @@
 tcpserver
 tcpclient
+.vscode
+.idea
 
 # Prerequisites
 *.d

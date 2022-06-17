@@ -1,6 +1,6 @@
 all:
-	gcc client.cpp -o tcpclient
-	gcc tcpepoll.cpp -o tcpserver
-	ls -alh tcpclient tcpserver
+    gcc client.cpp -o tcpclient
+    gcc tcpepoll.cpp -o tcpserver
+    ls -alh tcpclient tcpserver
 clean:
-	rm -rf tcpclient tcpserver
+    rm -rf tcpclient tcpserver

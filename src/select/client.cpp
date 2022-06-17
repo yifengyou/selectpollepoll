@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   char buf[1024];
  
   if ((sockfd=socket(AF_INET,SOCK_STREAM,0))<0) { printf("socket() failed.\n"); return -1; }
-	
+    
   memset(&servaddr,0,sizeof(servaddr));
   servaddr.sin_family=AF_INET;
   servaddr.sin_port=htons(atoi(argv[2]));
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     { 
       printf("write() failed.\n");  close(sockfd);  return -1;
     }
-		
+        
     memset(buf,0,sizeof(buf));
     if (read(sockfd,buf,sizeof(buf)) <=0) 
     { 
